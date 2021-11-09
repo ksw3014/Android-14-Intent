@@ -1,8 +1,12 @@
 package ian.com.intent;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +21,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void Phone(View view) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+"0978355530"));
-        startActivity(intent);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    1);
+        } else {
+            try {
+                startActivity(intent);
+            } catch(SecurityException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void Map(View view) {
